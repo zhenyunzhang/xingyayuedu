@@ -255,13 +255,13 @@
             class="story-video"
             controls
             playsinline
-            preload="metadata"
+            preload="auto"
             poster="assets/images/video-poster.jpg"
             aria-label="《静夜思》趣味故事动画">
             <source src="assets/video/story.mp4" type="video/mp4">
             你的浏览器暂时不能播放这个动画，可以请大人帮忙换一个浏览器。
           </video>
-          <div class="video-note">AI 绘本故事小课 · 约 2 分半 · 含背景与拓展 · 建议大人陪孩子一起听</div>
+          <div class="video-note" id="videoNote">AI 绘本故事小课 · 约 2 分半 · 含背景与拓展 · 建议大人陪孩子一起听</div>
         </div>
       </div>
     </section>
@@ -470,6 +470,17 @@
         pauseMedia(audio);
         audioStatus.textContent = "正在听故事，朗读先暂停啦。";
       }
+    });
+
+    const videoNote = document.querySelector("#videoNote");
+    video.addEventListener("waiting", () => {
+      if (videoNote) videoNote.textContent = "故事动画加载中，请稍等……";
+    });
+    video.addEventListener("playing", () => {
+      if (videoNote) videoNote.textContent = "AI 绘本故事小课 · 约 2 分半 · 含背景与拓展 · 建议大人陪孩子一起听";
+    });
+    video.addEventListener("error", () => {
+      if (videoNote) videoNote.textContent = "动画暂时打不开，请刷新页面或换 Safari / Chrome 试试。";
     });
 
     audio.addEventListener("play", () => {
