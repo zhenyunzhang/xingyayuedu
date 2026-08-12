@@ -4,7 +4,13 @@
 
 ## 在线访问
 
-GitHub Pages 部署后地址：
+在 GitHub 仓库 **Settings → Pages** 中开启一次：
+
+- **Source**：Deploy from a branch
+- **Branch**：`main` → **`/docs`**
+- 保存后等 1–3 分钟
+
+开启后地址：
 
 - 首页：https://zhenyunzhang.github.io/xingyayuedu/
 - 《静夜思》：https://zhenyunzhang.github.io/xingyayuedu/jing-ye-si/
