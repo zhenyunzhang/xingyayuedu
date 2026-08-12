@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="面向3—6岁儿童的《送杜少府之任蜀州》互动古诗启蒙教材">
+  <title>送杜少府之任蜀州｜小小友情旅行课</title>
+  <style>
+    :root {
+      --ink: #29333f;
+      --muted: #65717e;
+      --paper: #fffaf0;
+      --blue: #377a89;
+      --blue-dark: #245967;
+      --coral: #ef7b68;
+      --yellow: #f3c969;
+      --green: #72a777;
+      --shadow: 0 14px 36px rgba(51, 73, 82, .12);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 5%, rgba(243, 201, 105, .25), transparent 25rem),
+        linear-gradient(180deg, #edfafa 0, var(--paper) 35rem);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    a { color: var(--blue-dark); }
+
+    button, a.button {
+      min-width: 44px;
+      min-height: 44px;
+      border: 0;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    button:focus-visible, a:focus-visible { outline: 4px solid #1e6fa6; outline-offset: 4px; }
+    button:hover, a.button:hover { transform: translateY(-2px); }
+
+    .button, .primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      padding: .72rem 1.15rem;
+      color: #fff;
+      background: var(--blue-dark);
+      box-shadow: 0 6px 0 #173d47;
+      text-decoration: none;
+    }
+
+    .secondary {
+      padding: .65rem 1rem;
+      color: var(--blue-dark);
+      background: #e3f4f3;
+      border: 2px solid #9dd0d1;
+    }
+
+    .container { width: min(1080px, calc(100% - 2rem)); margin-inline: auto; }
+
+    .skip-link {
+      position: fixed; z-index: 100; top: .5rem; left: .5rem;
+      padding: .6rem 1rem; color: #fff; background: #111;
+      transform: translateY(-150%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .hero {
+      position: relative;
+      min-height: 560px;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 3;
+      max-width: 710px;
+      padding: 4rem 0 8rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin: 0 0 .6rem;
+      padding: .25rem .75rem;
+      color: #654d12;
+      background: #fff1a8;
+      border: 2px solid #e4c75e;
+      border-radius: 999px;
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    h1, h2, h3 { line-height: 1.25; }
+    h1 {
+      margin: .2rem 0 .65rem;
+      color: #234f5a;
+      font-family: "STKaiti", "KaiTi", serif;
+      font-size: clamp(2.3rem, 7vw, 5rem);
+      letter-spacing: .03em;
+    }
+
+    .hero .meta { margin: 0 0 .8rem; color: var(--muted); font-size: 1.1rem; font-weight: 700; }
+    .lead {
+      max-width: 620px;
+      margin: 0 0 1.3rem;
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      font-weight: 700;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+
+    .scene {
+      position: absolute; z-index: 1; inset: auto 0 0; height: 280px; pointer-events: none;
+    }
+    .sun {
+      position: absolute; right: 12%; bottom: 200px; width: 96px; aspect-ratio: 1;
+      border-radius: 50%; background: var(--yellow);
+      box-shadow: 0 0 0 18px rgba(243, 201, 105, .18);
+    }
+    .cloud {
+      position: absolute; width: 120px; height: 36px; border-radius: 999px;
+      background: rgba(255, 255, 255, .84);
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .cloud::before, .cloud::after {
+      content: ""; position: absolute; bottom: 8px; border-radius: 50%; background: inherit;
+    }
+    .cloud::before { left: 18px; width: 52px; height: 52px; }
+    .cloud::after { right: 16px; width: 42px; height: 42px; }
+    .cloud.one { left: 8%; bottom: 220px; }
+    .cloud.two { right: 28%; bottom: 150px; animation-delay: -4s; transform: scale(.72); }
+    .hill {
+      position: absolute; bottom: -130px; width: 58%; height: 300px;
+      border-radius: 50% 50% 0 0; background: #96c59d;
+    }
+    .hill.left { left: -8%; transform: rotate(7deg); }
+    .hill.right { right: -10%; background: #78ac87; transform: rotate(-8deg); }
+    .road {
+      position: absolute; left: 42%; bottom: -25px; width: 150px; height: 240px;
+      background: #f3dfaf; clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+    }
+    .friends {
+      position: absolute; z-index: 2; left: 50%; bottom: 45px;
+      display: flex; gap: 12px; transform: translateX(-50%);
+    }
+    .friend {
+      position: relative; width: 55px; height: 92px;
+      border-radius: 48% 48% 22% 22%; background: var(--coral);
+    }
+    .friend:nth-child(2) { background: var(--blue); }
+    .friend::before {
+      content: ""; position: absolute; top: -23px; left: 9px;
+      width: 38px; height: 38px; border-radius: 50%; background: #f1bf86;
+      box-shadow: inset 0 9px 0 #29333f;
+    }
+
+    main section { padding: 2rem 0 3.5rem; }
+    .section-heading { margin-bottom: 1.35rem; }
+    .section-heading h2 {
+      margin: 0 0 .35rem; color: var(--blue-dark);
+      font-size: clamp(1.8rem, 4.5vw, 2.7rem);
+    }
+    .section-heading p { margin: 0; color: var(--muted); }
+
+    .card {
+      padding: clamp(1rem, 3vw, 2rem);
+      background: rgba(255, 255, 255, .92);
+      border: 2px solid rgba(55, 122, 137, .14);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .video-shell { overflow: hidden; padding: 0; background: #16333b; }
+    .story-video {
+      display: block; width: 100%; max-height: 560px; background: #000;
+      vertical-align: middle;
+    }
+    .video-note {
+      padding: 1rem 1.25rem; color: #edfafa; background: #16333b; font-size: .9rem;
+    }
+
+    .poem-card {
+      position: relative; overflow: hidden; text-align: center;
+      background: linear-gradient(145deg, #fffdf8, #fff6dd);
+    }
+    .poem-card::before {
+      content: "友"; position: absolute; right: -1rem; bottom: -5rem;
+      color: rgba(239, 123, 104, .08);
+      font-family: "STKaiti", "KaiTi", serif; font-size: 16rem; line-height: 1;
+    }
+    .poem-title { margin: 0 0 .2rem; font-size: 1.55rem; }
+    .poem-author { margin: 0 0 1.2rem; color: var(--muted); }
+    .poem-lines {
+      position: relative; z-index: 1; display: grid; gap: 1.1rem; margin: 0 auto 1.2rem;
+    }
+    .poem-line { display: grid; gap: .08rem; justify-items: center; }
+    .pinyin {
+      min-height: 1.6em; color: #876a2f;
+      font-size: clamp(.84rem, 2.7vw, 1rem); letter-spacing: .06em;
+    }
+    .hanzi {
+      font-family: "STKaiti", "KaiTi", serif;
+      font-size: clamp(1.55rem, 5.8vw, 2.55rem); letter-spacing: .09em;
+    }
+    .audio-wrap {
+      position: relative; z-index: 1; margin: 0 auto 1rem; max-width: 420px;
+    }
+    .audio-wrap audio { width: 100%; }
+    .poem-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: .7rem; }
+    .memorize .word-help {
+      display: inline-block; min-width: 2em; color: transparent;
+      border-bottom: 3px dashed var(--coral); user-select: none;
+    }
+
+    .story-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem;
+    }
+    .story-card {
+      padding: 1.1rem; background: #fff; border: 3px solid #d7ebe8;
+      border-radius: 24px; box-shadow: 0 8px 0 #e8f4f2;
+    }
+    .story-card .number {
+      display: inline-grid; width: 40px; height: 40px; place-items: center;
+      border-radius: 50%; color: var(--ink); background: var(--yellow); font-weight: 900;
+    }
+    .story-card h3 {
+      margin: .7rem 0 .35rem; font-family: "STKaiti", "KaiTi", serif; font-size: 1.25rem;
+    }
+    .story-card > p { margin: 0 0 1rem; color: var(--muted); }
+    .reveal {
+      display: none; margin-top: .9rem; padding: .75rem;
+      background: #f7fbfa; border-radius: 16px;
+    }
+    .story-card.open .reveal { display: block; animation: pop .25s ease-out; }
+    .reveal img {
+      display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
+      border-radius: 14px; margin-bottom: .7rem;
+    }
+    .reveal p { margin: 0; }
+
+    .word-grid {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem;
+    }
+    .word-card {
+      min-height: 160px; padding: 1.1rem; text-align: center; background: #fff;
+      border: 3px solid #e8dcae; border-radius: 24px; box-shadow: 0 8px 0 #efe2b5;
+    }
+    .word-card .icon { display: block; font-size: 2.5rem; }
+    .word-card h3 { margin: .25rem 0; color: var(--blue-dark); font-size: 1.35rem; }
+    .word-card p { margin: 0; font-size: .95rem; }
+
+    .games { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+    .game h3 { margin-top: 0; }
+    .pick-line {
+      margin: 0 0 1rem; padding: .8rem 1rem; text-align: center;
+      font-family: "STKaiti", "KaiTi", serif; font-size: 1.45rem;
+      background: #fff8dc; border-radius: 16px;
+    }
+    .pick-list, .order-list {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .8rem;
+    }
+    .order-list { grid-template-columns: 1fr; }
+    .pick-choice, .order-choice {
+      width: 100%; min-height: 96px; padding: 1rem .5rem;
+      color: var(--ink); background: #eef8f6; border: 3px solid #acd8d3;
+      border-radius: 18px; box-shadow: none; font-size: 1.15rem;
+    }
+    .pick-choice .emoji { display: block; font-size: 2.4rem; margin-bottom: .2rem; }
+    .pick-choice.correct-flash { background: #dff0c9; border-color: #6ca253; }
+    .pick-choice.wrong-flash { background: #ffe4df; border-color: #e08a7a; }
+    .order-choice[disabled] {
+      color: #fff; background: var(--green); border-color: #4d8055; cursor: default; opacity: 1;
+    }
+    .feedback { min-height: 1.8em; margin: .9rem 0 .6rem; color: #294f35; font-weight: 800; }
+
+    .read-rhythm {
+      font-family: "STKaiti", "KaiTi", serif;
+      font-size: clamp(1.35rem, 4vw, 2rem); text-align: center;
+    }
+    .read-rhythm strong { color: var(--coral); }
+
+    .parent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .parent-card { border-left: 8px solid var(--yellow); }
+    .parent-card h3 { margin-top: 0; }
+
+    footer {
+      padding: 2rem 0 3rem; color: #dae8e8; background: #1c414b;
+    }
+    footer p { margin: .35rem 0; }
+
+    @keyframes drift { to { transform: translateX(28px); } }
+    @keyframes pop { from { opacity: 0; transform: translateY(8px); } }
+
+    @media (max-width: 760px) {
+      .hero { min-height: 620px; }
+      .hero-copy { padding-top: 2.5rem; }
+      .story-grid, .parent-grid, .games, .word-grid { grid-template-columns: 1fr; }
+      .word-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .scene { height: 230px; }
+    }
+
+    @media (max-width: 360px) {
+      .container { width: min(100% - 1rem, 1080px); }
+      .hanzi { letter-spacing: .02em; }
+      .hero-actions > * { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="hero">
+    <div class="container hero-copy">
+      <p class="eyebrow">小小友情旅行课</p>
+      <h1>送杜少府之任蜀州</h1>
+      <p class="meta">唐 · 王勃</p>
+      <p class="lead">好朋友去了很远的地方，友情会不会也变远呢？这首诗说：不会！</p>
+      <div class="hero-actions">
+        <a class="button" href="#poem">开始读诗</a>
+        <a class="button" href="#video">看趣味动画</a>
+      </div>
+    </div>
+    <div class="scene" aria-hidden="true">
+      <span class="sun"></span>
+      <span class="cloud one"></span>
+      <span class="cloud two"></span>
+      <span class="hill left"></span>
+      <span class="hill right"></span>
+      <span class="road"></span>
+      <span class="friends"><span class="friend"></span><span class="friend"></span></span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="video" aria-labelledby="video-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="video-title">先听一个有趣的小故事</h2>
+          <p>王勃送朋友远行的故事，还有「天涯若比邻」为什么这么暖。听完再读古诗。听朗读时动画会自动暂停。</p>
+        </div>
+        <div class="card video-shell">
+          <video
+            id="storyVideo"
+            class="story-video"
+            controls
+            playsinline
+            preload="metadata"
+            poster="assets/images/video-poster.jpg"
+            aria-label="《送杜少府之任蜀州》趣味动画">
+            <source src="assets/video/story.mp4" type="video/mp4">
+            你的浏览器暂时不能播放这个动画，可以请大人帮忙换一个浏览器。
+          </video>
+          <div class="video-note">AI 绘本故事小课 · 约 2 分半 · 含典故儿童版与拓展 · 建议大人陪孩子一起听</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="poem" aria-labelledby="poem-title-heading">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="poem-title-heading">一起读古诗</h2>
+          <p>点下面的喇叭听温柔朗读。听的时候动画会安静下来。</p>
+        </div>
+        <article class="card poem-card" id="poemCard">
+          <h3 class="poem-title">送杜少府之任蜀州</h3>
+          <p class="poem-author">唐 · 王勃</p>
+          <div class="poem-lines" role="group" aria-label="古诗原文与拼音">
+            <div class="poem-line">
+              <span class="pinyin">chéng què fǔ sān qín，fēng yān wàng wǔ jīn</span>
+              <span class="hanzi">城阙辅三秦，风烟望五津。</span>
+            </div>
+            <div class="poem-line">
+              <span class="pinyin">yǔ jūn lí bié yì，tóng shì huàn yóu rén</span>
+              <span class="hanzi">与君离别意，同是宦游人。</span>
+            </div>
+            <div class="poem-line">
+              <span class="pinyin">hǎi nèi cún zhī jǐ，tiān yá ruò bǐ lín</span>
+              <span class="hanzi">海内存知己，天涯若比邻。</span>
+            </div>
+            <div class="poem-line">
+              <span class="pinyin">wú wéi zài qí lù，ér nǚ gòng zhān jīn</span>
+              <span class="hanzi">无为在歧路，儿女共沾巾。</span>
+            </div>
+          </div>
+          <div class="audio-wrap">
+            <audio id="poemAudio" controls preload="metadata" aria-label="古诗情感朗读">
+              <source src="assets/audio/poem.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+          <div class="poem-tools">
+            <button type="button" class="primary" id="playAudio">播放朗读</button>
+            <button type="button" class="secondary" id="pauseAudio">暂停</button>
+            <button type="button" class="secondary" id="memorizeMode" aria-pressed="false">背诵挑战</button>
+          </div>
+          <p class="feedback" id="audioStatus" aria-live="polite"></p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="story-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="story-title">诗里藏着四幅画</h2>
+          <p>点开每一句，看看小画，再听懂意思。</p>
+        </div>
+        <div class="story-grid">
+          <article class="story-card">
+            <span class="number">1</span>
+            <h3>城阙辅三秦，风烟望五津。</h3>
+            <p>一边是大城，一边是远方。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-04.png" alt="两个小朋友站在城墙上，遥望远方的山和风烟" width="640" height="426">
+              <p>高高的城楼外，风和烟雾飘向远方。朋友要去的蜀地，路很远很远。</p>
+            </div>
+          </article>
+          <article class="story-card">
+            <span class="number">2</span>
+            <h3>与君离别意，同是宦游人。</h3>
+            <p>两个朋友就要分别了。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-05.png" alt="两个小朋友坐在路边，彼此懂得想家的感觉" width="640" height="426">
+              <p>你要远行，我也常常在外。我们都懂得想家的感觉。</p>
+            </div>
+          </article>
+          <article class="story-card">
+            <span class="number">3</span>
+            <h3>海内存知己，天涯若比邻。</h3>
+            <p>真朋友不怕离得远。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-07.png" alt="两个小朋友虽然相隔很远，心里的友情连在一起" width="640" height="426">
+              <p>只要心里记着好朋友，就算隔着山和河，也像住在旁边。</p>
+            </div>
+          </article>
+          <article class="story-card">
+            <span class="number">4</span>
+            <h3>无为在歧路，儿女共沾巾。</h3>
+            <p>挥挥手，勇敢地说再见。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-08.png" alt="两个小朋友在岔路口开心地挥手再见" width="640" height="426">
+              <p>在分开的路口，不要只顾着哭。带着友情，各自勇敢向前走。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="words-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="words-title">认识四个小词语</h2>
+          <p>用熟悉的小画面，记住诗里的意思。</p>
+        </div>
+        <div class="word-grid">
+          <article class="word-card"><span class="icon" aria-hidden="true">🏯</span><h3>城阙</h3><p>这里指古代的大城。</p></article>
+          <article class="word-card"><span class="icon" aria-hidden="true">🧑‍🤝‍🧑</span><h3>知己</h3><p>懂你、关心你的好朋友。</p></article>
+          <article class="word-card"><span class="icon" aria-hidden="true">🌏</span><h3>天涯</h3><p>非常非常远的地方。</p></article>
+          <article class="word-card"><span class="icon" aria-hidden="true">🏠🏠</span><h3>比邻</h3><p>像邻居一样靠得很近。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="games-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="games-title">玩一玩，记得牢</h2>
+          <p>很简单哦，点一点就好，没有分数和排名。</p>
+        </div>
+        <div class="games">
+          <article class="card game">
+            <h3>点一点</h3>
+            <p class="pick-line">“海内存知己”说的是什么？</p>
+            <div class="pick-list">
+              <button type="button" class="pick-choice" data-correct="true"><span class="emoji" aria-hidden="true">🧑‍🤝‍🧑</span>好朋友</button>
+              <button type="button" class="pick-choice" data-correct="false"><span class="emoji" aria-hidden="true">🎂</span>大蛋糕</button>
+            </div>
+            <p class="feedback" id="pickFeedback" aria-live="polite"></p>
+            <button type="button" class="secondary" id="resetPick">再玩一次</button>
+          </article>
+          <article class="card game">
+            <h3>排两句</h3>
+            <p>先点第一句，再点第二句。</p>
+            <div class="order-list" id="orderList"></div>
+            <p class="feedback" id="orderFeedback" aria-live="polite"></p>
+            <button type="button" class="secondary" id="resetOrder">再玩一次</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="read-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="read-title">一起有节奏地读</h2>
+          <p>小斜线表示轻轻停一下，不是诗里的字。</p>
+        </div>
+        <div class="card read-rhythm">
+          <p>城阙 / 辅三秦，风烟 / 望五津。</p>
+          <p>与君 / 离别意，同是 / 宦游人。</p>
+          <p><strong>海内 / 存知己，天涯 / 若比邻。</strong></p>
+          <p>无为 / 在歧路，儿女 / 共沾巾。</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="parent-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="parent-title">给大人的陪读小纸条</h2>
+          <p>不要求一次背会，先让孩子感受到友情。</p>
+        </div>
+        <div class="parent-grid">
+          <article class="card parent-card">
+            <h3>今天可以聊什么？</h3>
+            <p>问问孩子：“你的好朋友住在哪里？”再一起想想，见不到时还可以怎样表达关心。</p>
+          </article>
+          <article class="card parent-card">
+            <h3>做一个小动作</h3>
+            <p>和孩子面对面挥手，说一句“虽然离得远，我们还是好朋友”，帮助理解“天涯若比邻”。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p><strong>《送杜少府之任蜀州》小小友情旅行课</strong></p>
+      <p>无登录、无广告、无个人信息收集。诗文与游戏断网也可使用；动画与朗读需要本地媒体文件。</p>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const video = document.querySelector("#storyVideo");
+    const audio = document.querySelector("#poemAudio");
+    const audioStatus = document.querySelector("#audioStatus");
+
+    function pauseMedia(media) {
+      if (!media) return;
+      media.pause();
+    }
+
+    function playExclusive(next) {
+      if (next !== video) pauseMedia(video);
+      if (next !== audio) {
+        pauseMedia(audio);
+      }
+      const playPromise = next.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          if (next === audio) audioStatus.textContent = "朗读还没开始，请再点一次播放。";
+        });
+      }
+    }
+
+    video.addEventListener("play", () => {
+      if (!audio.paused) {
+        pauseMedia(audio);
+        audioStatus.textContent = "正在看动画，朗读先暂停啦。";
+      }
+    });
+
+    audio.addEventListener("play", () => {
+      if (!video.paused) pauseMedia(video);
+      audioStatus.textContent = "正在听温柔朗读，可以看着诗句一起读。";
+    });
+
+    audio.addEventListener("ended", () => {
+      audioStatus.textContent = "朗读完成，真棒！";
+    });
+
+    document.querySelector("#playAudio").addEventListener("click", () => {
+      playExclusive(audio);
+    });
+
+    document.querySelector("#pauseAudio").addEventListener("click", () => {
+      pauseMedia(audio);
+      audioStatus.textContent = "朗读已暂停。";
+    });
+
+    document.querySelectorAll(".reveal-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const card = button.closest(".story-card");
+        const isOpen = card.classList.toggle("open");
+        button.setAttribute("aria-expanded", String(isOpen));
+        button.textContent = isOpen ? "收起小画" : "看这幅画";
+      });
+    });
+
+    document.querySelector("#memorizeMode").addEventListener("click", (event) => {
+      const active = document.querySelector("#poemCard").classList.toggle("memorize");
+      event.currentTarget.setAttribute("aria-pressed", String(active));
+      event.currentTarget.textContent = active ? "显示全诗" : "背诵挑战";
+      const targets = document.querySelectorAll(".hanzi");
+      const hiddenWords = ["三秦", "离别", "知己", "歧路"];
+      targets.forEach((line, index) => {
+        if (active) {
+          line.dataset.fullText = line.textContent;
+          const word = hiddenWords[index];
+          line.innerHTML = line.textContent.replace(
+            word,
+            `<span class="word-help" aria-label="这里藏了两个字">${word}</span>`
+          );
+        } else if (line.dataset.fullText) {
+          line.textContent = line.dataset.fullText;
+        }
+      });
+    });
+
+    const pickChoices = [...document.querySelectorAll(".pick-choice")];
+    pickChoices.forEach((button) => {
+      button.addEventListener("click", () => {
+        pickChoices.forEach((item) => {
+          item.classList.remove("correct-flash", "wrong-flash");
+          item.disabled = true;
+        });
+        const correct = button.dataset.correct === "true";
+        button.classList.add(correct ? "correct-flash" : "wrong-flash");
+        document.querySelector("#pickFeedback").textContent = correct
+          ? "对啦！知己就是好朋友。👏"
+          : "再想想：知己是懂你的好朋友。";
+        if (!correct) {
+          const right = pickChoices.find((item) => item.dataset.correct === "true");
+          right.classList.add("correct-flash");
+        }
+      });
+    });
+
+    document.querySelector("#resetPick").addEventListener("click", () => {
+      pickChoices.forEach((button) => {
+        button.disabled = false;
+        button.classList.remove("correct-flash", "wrong-flash");
+      });
+      document.querySelector("#pickFeedback").textContent = "";
+    });
+
+    const orderedLines = [
+      "海内存知己，",
+      "天涯若比邻。"
+    ];
+    let orderStep = 0;
+
+    function shuffled(items) {
+      const copy = [...items];
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+      }
+      return copy;
+    }
+
+    function renderOrderGame() {
+      const list = document.querySelector("#orderList");
+      list.replaceChildren();
+      orderStep = 0;
+      document.querySelector("#orderFeedback").textContent = "请点第一句。";
+      shuffled(orderedLines).forEach((line) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "order-choice";
+        button.textContent = line;
+        button.addEventListener("click", () => {
+          if (line === orderedLines[orderStep]) {
+            button.disabled = true;
+            button.textContent = `✓ ${line}`;
+            orderStep += 1;
+            document.querySelector("#orderFeedback").textContent =
+              orderStep === orderedLines.length ? "排对啦！这两句最有名。👏" : "很好，再点下一句。";
+          } else {
+            document.querySelector("#orderFeedback").textContent = "先找第一句哦。";
+          }
+        });
+        list.append(button);
+      });
+    }
+
+    document.querySelector("#resetOrder").addEventListener("click", renderOrderGame);
+    renderOrderGame();
+  </script>
+</body>
+</html>

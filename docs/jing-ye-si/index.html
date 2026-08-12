@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="面向3—6岁儿童的《静夜思》互动古诗启蒙教材">
+  <title>静夜思｜小小月亮想家课</title>
+  <style>
+    :root {
+      --ink: #273246;
+      --muted: #657089;
+      --paper: #f7f4ee;
+      --blue: #4a6fa5;
+      --blue-dark: #2f4f7a;
+      --coral: #e08a6a;
+      --yellow: #f0d48a;
+      --green: #6a9b7a;
+      --shadow: 0 14px 36px rgba(47, 64, 96, .14);
+      --radius: 28px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 85% 8%, rgba(240, 212, 138, .35), transparent 22rem),
+        linear-gradient(180deg, #dce7f5 0, var(--paper) 34rem);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 18px;
+      line-height: 1.7;
+    }
+    a { color: var(--blue-dark); }
+    button, a.button {
+      min-width: 44px; min-height: 44px; border: 0; border-radius: 999px;
+      font: inherit; font-weight: 700; cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    button:focus-visible, a:focus-visible { outline: 4px solid #3d6eae; outline-offset: 4px; }
+    button:hover, a.button:hover { transform: translateY(-2px); }
+    .button, .primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+      padding: .72rem 1.15rem; color: #fff; background: var(--blue-dark);
+      box-shadow: 0 6px 0 #1e3554; text-decoration: none;
+    }
+    .secondary {
+      padding: .65rem 1rem; color: var(--blue-dark); background: #e7eef8;
+      border: 2px solid #b7c9e4;
+    }
+    .container { width: min(1080px, calc(100% - 2rem)); margin-inline: auto; }
+    .skip-link {
+      position: fixed; z-index: 100; top: .5rem; left: .5rem;
+      padding: .6rem 1rem; color: #fff; background: #111; transform: translateY(-150%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+    .hero { position: relative; min-height: 560px; overflow: hidden; isolation: isolate; }
+    .hero-copy { position: relative; z-index: 3; max-width: 710px; padding: 4rem 0 8rem; }
+    .eyebrow {
+      display: inline-block; margin: 0 0 .6rem; padding: .25rem .75rem;
+      color: #4a3a12; background: #fff1b8; border: 2px solid #e4c75e;
+      border-radius: 999px; font-size: .9rem; font-weight: 800; letter-spacing: .08em;
+    }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 {
+      margin: .2rem 0 .65rem; color: #2a4470;
+      font-family: "STKaiti", "KaiTi", serif;
+      font-size: clamp(2.5rem, 8vw, 5.2rem); letter-spacing: .08em;
+    }
+    .hero .meta { margin: 0 0 .8rem; color: var(--muted); font-size: 1.1rem; font-weight: 700; }
+    .lead {
+      max-width: 620px; margin: 0 0 1.3rem;
+      font-size: clamp(1.15rem, 3vw, 1.45rem); font-weight: 700;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .8rem; }
+    .moon-scene {
+      position: absolute; z-index: 1; inset: auto 0 0; height: 280px; pointer-events: none;
+    }
+    .moon {
+      position: absolute; right: 12%; bottom: 170px; width: 110px; aspect-ratio: 1;
+      border-radius: 50%; background: #fff4c2;
+      box-shadow: 0 0 0 18px rgba(255, 244, 194, .18), 0 0 40px rgba(255, 244, 194, .45);
+    }
+    .hill {
+      position: absolute; bottom: -120px; width: 60%; height: 280px;
+      border-radius: 50% 50% 0 0; background: #8fa8c4;
+    }
+    .hill.left { left: -10%; background: #7d96b5; }
+    .hill.right { right: -12%; transform: rotate(-6deg); }
+    .house {
+      position: absolute; left: 18%; bottom: 55px; width: 70px; height: 56px;
+      background: #f3e2c0; border-radius: 8px 8px 0 0;
+      box-shadow: inset 0 -18px 0 #d9b78a;
+    }
+    .house::before {
+      content: ""; position: absolute; top: -28px; left: -8px; right: -8px; height: 34px;
+      background: #c07a5a; clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+    main section { padding: 2rem 0 3.5rem; }
+    .section-heading { margin-bottom: 1.35rem; }
+    .section-heading h2 {
+      margin: 0 0 .35rem; color: var(--blue-dark);
+      font-size: clamp(1.8rem, 4.5vw, 2.7rem);
+    }
+    .section-heading p { margin: 0; color: var(--muted); }
+    .card {
+      padding: clamp(1rem, 3vw, 2rem);
+      background: rgba(255, 255, 255, .92);
+      border: 2px solid rgba(74, 111, 165, .14);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+    }
+    .video-shell { overflow: hidden; padding: 0; background: #1b2a44; }
+    .story-video { display: block; width: 100%; max-height: 560px; background: #000; }
+    .video-note { padding: 1rem 1.25rem; color: #edf2fa; background: #1b2a44; font-size: .9rem; }
+    .poem-card {
+      position: relative; overflow: hidden; text-align: center;
+      background: linear-gradient(145deg, #fffdf8, #eef4fb);
+    }
+    .poem-card::before {
+      content: "月"; position: absolute; right: -1rem; bottom: -5rem;
+      color: rgba(74, 111, 165, .08);
+      font-family: "STKaiti", "KaiTi", serif; font-size: 16rem; line-height: 1;
+    }
+    .poem-title { margin: 0 0 .2rem; font-size: 1.55rem; }
+    .poem-author { margin: 0 0 1.2rem; color: var(--muted); }
+    .poem-lines { position: relative; z-index: 1; display: grid; gap: 1.1rem; margin: 0 auto 1.2rem; }
+    .poem-line { display: grid; gap: .08rem; justify-items: center; }
+    .pinyin {
+      min-height: 1.6em; color: #6d5a2e;
+      font-size: clamp(.84rem, 2.7vw, 1rem); letter-spacing: .06em;
+    }
+    .hanzi {
+      font-family: "STKaiti", "KaiTi", serif;
+      font-size: clamp(1.55rem, 5.8vw, 2.55rem); letter-spacing: .12em;
+    }
+    .audio-wrap { position: relative; z-index: 1; margin: 0 auto 1rem; max-width: 420px; }
+    .audio-wrap audio { width: 100%; }
+    .poem-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: .7rem; }
+    .memorize .word-help {
+      display: inline-block; min-width: 2em; color: transparent;
+      border-bottom: 3px dashed var(--coral); user-select: none;
+    }
+    .story-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .story-card {
+      padding: 1.1rem; background: #fff; border: 3px solid #d7e3f2;
+      border-radius: 24px; box-shadow: 0 8px 0 #e8eef7;
+    }
+    .story-card .number {
+      display: inline-grid; width: 40px; height: 40px; place-items: center;
+      border-radius: 50%; color: var(--ink); background: var(--yellow); font-weight: 900;
+    }
+    .story-card h3 {
+      margin: .7rem 0 .35rem; font-family: "STKaiti", "KaiTi", serif; font-size: 1.25rem;
+    }
+    .story-card > p { margin: 0 0 1rem; color: var(--muted); }
+    .reveal { display: none; margin-top: .9rem; padding: .75rem; background: #f5f8fc; border-radius: 16px; }
+    .story-card.open .reveal { display: block; animation: pop .25s ease-out; }
+    .reveal img {
+      display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover;
+      border-radius: 14px; margin-bottom: .7rem;
+    }
+    .reveal p { margin: 0; }
+    .word-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+    .word-card {
+      min-height: 160px; padding: 1.1rem; text-align: center; background: #fff;
+      border: 3px solid #e8dcae; border-radius: 24px; box-shadow: 0 8px 0 #efe2b5;
+    }
+    .word-card .icon { display: block; font-size: 2.5rem; }
+    .word-card h3 { margin: .25rem 0; color: var(--blue-dark); font-size: 1.35rem; }
+    .word-card p { margin: 0; font-size: .95rem; }
+    .games { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+    .game h3 { margin-top: 0; }
+    .pick-line {
+      margin: 0 0 1rem; padding: .8rem 1rem; text-align: center;
+      font-family: "STKaiti", "KaiTi", serif; font-size: 1.45rem;
+      background: #fff8dc; border-radius: 16px;
+    }
+    .pick-list, .order-list { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+    .order-list { grid-template-columns: 1fr; }
+    .pick-choice, .order-choice {
+      width: 100%; min-height: 96px; padding: 1rem .5rem; color: var(--ink);
+      background: #eef4fb; border: 3px solid #b7c9e4; border-radius: 18px;
+      box-shadow: none; font-size: 1.15rem;
+    }
+    .pick-choice .emoji { display: block; font-size: 2.4rem; margin-bottom: .2rem; }
+    .pick-choice.correct-flash { background: #dff0c9; border-color: #6ca253; }
+    .pick-choice.wrong-flash { background: #ffe4df; border-color: #e08a7a; }
+    .order-choice[disabled] {
+      color: #fff; background: var(--green); border-color: #4d8055; cursor: default; opacity: 1;
+    }
+    .feedback { min-height: 1.8em; margin: .9rem 0 .6rem; color: #294f35; font-weight: 800; }
+    .read-rhythm {
+      font-family: "STKaiti", "KaiTi", serif;
+      font-size: clamp(1.35rem, 4vw, 2rem); text-align: center;
+    }
+    .read-rhythm strong { color: var(--coral); }
+    .parent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .parent-card { border-left: 8px solid var(--yellow); }
+    .parent-card h3 { margin-top: 0; }
+    footer { padding: 2rem 0 3rem; color: #dce6f5; background: #243554; }
+    footer p { margin: .35rem 0; }
+    @keyframes pop { from { opacity: 0; transform: translateY(8px); } }
+    @media (max-width: 760px) {
+      .hero { min-height: 620px; }
+      .hero-copy { padding-top: 2.5rem; }
+      .story-grid, .parent-grid, .games { grid-template-columns: 1fr; }
+      .word-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 360px) {
+      .container { width: min(100% - 1rem, 1080px); }
+      .hanzi { letter-spacing: .04em; }
+      .hero-actions > * { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <header class="hero">
+    <div class="container hero-copy">
+      <p class="eyebrow">小小月亮想家课</p>
+      <h1>静夜思</h1>
+      <p class="meta">唐 · 李白</p>
+      <p class="lead">夜里看见白白的月光，心里会想起谁呢？跟着李白，看一轮月亮。</p>
+      <div class="hero-actions">
+        <a class="button" href="#poem">开始读诗</a>
+        <a class="button" href="#video">听月亮故事</a>
+      </div>
+    </div>
+    <div class="moon-scene" aria-hidden="true">
+      <span class="moon"></span>
+      <span class="hill left"></span>
+      <span class="hill right"></span>
+      <span class="house"></span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="video" aria-labelledby="video-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="video-title">先听一个有趣的小故事</h2>
+          <p>月光像霜、抬头看月、低头想家……还有中秋赏月的小拓展。听朗读时动画会自动暂停。</p>
+        </div>
+        <div class="card video-shell">
+          <video
+            id="storyVideo"
+            class="story-video"
+            controls
+            playsinline
+            preload="metadata"
+            poster="assets/images/video-poster.jpg"
+            aria-label="《静夜思》趣味故事动画">
+            <source src="assets/video/story.mp4" type="video/mp4">
+            你的浏览器暂时不能播放这个动画，可以请大人帮忙换一个浏览器。
+          </video>
+          <div class="video-note">AI 绘本故事小课 · 约 2 分半 · 含背景与拓展 · 建议大人陪孩子一起听</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="poem" aria-labelledby="poem-title-heading">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="poem-title-heading">一起读古诗</h2>
+          <p>点下面听温柔朗读。听的时候故事动画会安静下来。</p>
+        </div>
+        <article class="card poem-card" id="poemCard">
+          <h3 class="poem-title">静夜思</h3>
+          <p class="poem-author">唐 · 李白</p>
+          <div class="poem-lines" role="group" aria-label="古诗原文与拼音">
+            <div class="poem-line">
+              <span class="pinyin">chuáng qián míng yuè guāng</span>
+              <span class="hanzi">床前明月光，</span>
+            </div>
+            <div class="poem-line">
+              <span class="pinyin">yí shì dì shàng shuāng</span>
+              <span class="hanzi">疑是地上霜。</span>
+            </div>
+            <div class="poem-line">
+              <span class="pinyin">jǔ tóu wàng míng yuè</span>
+              <span class="hanzi">举头望明月，</span>
+            </div>
+            <div class="poem-line">
+              <span class="pinyin">dī tóu sī gù xiāng</span>
+              <span class="hanzi">低头思故乡。</span>
+            </div>
+          </div>
+          <div class="audio-wrap">
+            <audio id="poemAudio" controls preload="metadata" aria-label="古诗情感朗读">
+              <source src="assets/audio/poem.mp3" type="audio/mpeg">
+            </audio>
+          </div>
+          <div class="poem-tools">
+            <button type="button" class="primary" id="playAudio">播放朗读</button>
+            <button type="button" class="secondary" id="pauseAudio">暂停</button>
+            <button type="button" class="secondary" id="memorizeMode" aria-pressed="false">背诵挑战</button>
+          </div>
+          <p class="feedback" id="audioStatus" aria-live="polite"></p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="story-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="story-title">诗里藏着四幅画</h2>
+          <p>点开每一句，看看小画，再听懂意思。</p>
+        </div>
+        <div class="story-grid">
+          <article class="story-card">
+            <span class="number">1</span>
+            <h3>床前明月光，</h3>
+            <p>床前一片亮亮的光。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-03.png" alt="夜里床前洒满白白亮亮的月光" width="640" height="426">
+              <p>安静的夜里，床前忽然亮起来，那是月亮送来的光。</p>
+            </div>
+          </article>
+          <article class="story-card">
+            <span class="number">2</span>
+            <h3>疑是地上霜。</h3>
+            <p>好像地上铺了白霜。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-04.png" alt="小朋友看见月光亮得像地上的霜" width="640" height="426">
+              <p>月光太白了，乍一看还以为是地上的霜呢。</p>
+            </div>
+          </article>
+          <article class="story-card">
+            <span class="number">3</span>
+            <h3>举头望明月，</h3>
+            <p>抬起头看月亮。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-05.png" alt="小朋友抬起头望着天上的明月" width="640" height="426">
+              <p>抬起头，望着天上那轮又圆又亮的月亮。</p>
+            </div>
+          </article>
+          <article class="story-card">
+            <span class="number">4</span>
+            <h3>低头思故乡。</h3>
+            <p>低下头，想起家乡。</p>
+            <button type="button" class="secondary reveal-button" aria-expanded="false">看这幅画</button>
+            <div class="reveal">
+              <img src="assets/images/scene-06.png" alt="小朋友低下头，心里想起温暖的家" width="640" height="426">
+              <p>低下头，心里想起长大的那个家，还有爱的人。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="words-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="words-title">认识四个小词语</h2>
+          <p>用熟悉的小画面，记住诗里的意思。</p>
+        </div>
+        <div class="word-grid">
+          <article class="word-card"><span class="icon" aria-hidden="true">🌕</span><h3>明月</h3><p>又亮又好看的月亮。</p></article>
+          <article class="word-card"><span class="icon" aria-hidden="true">❄️</span><h3>霜</h3><p>白白薄薄的一层，像冰。</p></article>
+          <article class="word-card"><span class="icon" aria-hidden="true">⬆️</span><h3>举头</h3><p>抬起头来看。</p></article>
+          <article class="word-card"><span class="icon" aria-hidden="true">🏠</span><h3>故乡</h3><p>自己长大的那个家。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="games-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="games-title">玩一玩，记得牢</h2>
+          <p>很简单哦，点一点就好，没有分数和排名。</p>
+        </div>
+        <div class="games">
+          <article class="card game">
+            <h3>点一点</h3>
+            <p class="pick-line">“疑是地上霜”里的霜像什么？</p>
+            <div class="pick-list">
+              <button type="button" class="pick-choice" data-correct="true"><span class="emoji" aria-hidden="true">🌕</span>白白的月光</button>
+              <button type="button" class="pick-choice" data-correct="false"><span class="emoji" aria-hidden="true">🎂</span>甜甜的蛋糕</button>
+            </div>
+            <p class="feedback" id="pickFeedback" aria-live="polite"></p>
+            <button type="button" class="secondary" id="resetPick">再玩一次</button>
+          </article>
+          <article class="card game">
+            <h3>排两句</h3>
+            <p>先点第一句，再点第二句。</p>
+            <div class="order-list" id="orderList"></div>
+            <p class="feedback" id="orderFeedback" aria-live="polite"></p>
+            <button type="button" class="secondary" id="resetOrder">再玩一次</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="read-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="read-title">一起有节奏地读</h2>
+          <p>小斜线表示轻轻停一下，不是诗里的字。</p>
+        </div>
+        <div class="card read-rhythm">
+          <p>床前 / 明月光，疑是 / 地上霜。</p>
+          <p><strong>举头 / 望明月，低头 / 思故乡。</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="parent-title">
+      <div class="container">
+        <div class="section-heading">
+          <h2 id="parent-title">给大人的陪读小纸条</h2>
+          <p>不要求一次背会，先让孩子看见月亮、感到温暖。</p>
+        </div>
+        <div class="parent-grid">
+          <article class="card parent-card">
+            <h3>今天可以聊什么？</h3>
+            <p>晚上如果看见月亮，问问孩子：“月亮照到我们，也会照到谁呀？”把想家讲成心里有爱。</p>
+          </article>
+          <article class="card parent-card">
+            <h3>做一个小动作</h3>
+            <p>和孩子一起：先抬头看月亮（或月亮图片），再摸摸胸口说“我想家/我想你”，对应举头与低头。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p><strong>《静夜思》小小月亮想家课</strong></p>
+      <p>无登录、无广告、无个人信息收集。诗文与游戏断网也可使用；动画与朗读需要本地媒体文件。</p>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const video = document.querySelector("#storyVideo");
+    const audio = document.querySelector("#poemAudio");
+    const audioStatus = document.querySelector("#audioStatus");
+
+    function pauseMedia(media) {
+      if (!media) return;
+      media.pause();
+    }
+
+    function playExclusive(next) {
+      if (next !== video) pauseMedia(video);
+      if (next !== audio) pauseMedia(audio);
+      const playPromise = next.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          if (next === audio) audioStatus.textContent = "朗读还没开始，请再点一次播放。";
+        });
+      }
+    }
+
+    video.addEventListener("play", () => {
+      if (!audio.paused) {
+        pauseMedia(audio);
+        audioStatus.textContent = "正在听故事，朗读先暂停啦。";
+      }
+    });
+
+    audio.addEventListener("play", () => {
+      if (!video.paused) pauseMedia(video);
+      audioStatus.textContent = "正在听温柔朗读，可以看着诗句一起读。";
+    });
+
+    audio.addEventListener("ended", () => {
+      audioStatus.textContent = "朗读完成，真棒！";
+    });
+
+    document.querySelector("#playAudio").addEventListener("click", () => playExclusive(audio));
+    document.querySelector("#pauseAudio").addEventListener("click", () => {
+      pauseMedia(audio);
+      audioStatus.textContent = "朗读已暂停。";
+    });
+
+    document.querySelectorAll(".reveal-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const card = button.closest(".story-card");
+        const isOpen = card.classList.toggle("open");
+        button.setAttribute("aria-expanded", String(isOpen));
+        button.textContent = isOpen ? "收起小画" : "看这幅画";
+      });
+    });
+
+    document.querySelector("#memorizeMode").addEventListener("click", (event) => {
+      const active = document.querySelector("#poemCard").classList.toggle("memorize");
+      event.currentTarget.setAttribute("aria-pressed", String(active));
+      event.currentTarget.textContent = active ? "显示全诗" : "背诵挑战";
+      const targets = document.querySelectorAll(".hanzi");
+      const hiddenWords = ["明月", "地上", "望明", "故乡"];
+      targets.forEach((line, index) => {
+        if (active) {
+          line.dataset.fullText = line.textContent;
+          const word = hiddenWords[index];
+          line.innerHTML = line.textContent.replace(
+            word,
+            `<span class="word-help" aria-label="这里藏了两个字">${word}</span>`
+          );
+        } else if (line.dataset.fullText) {
+          line.textContent = line.dataset.fullText;
+        }
+      });
+    });
+
+    const pickChoices = [...document.querySelectorAll(".pick-choice")];
+    pickChoices.forEach((button) => {
+      button.addEventListener("click", () => {
+        pickChoices.forEach((item) => {
+          item.classList.remove("correct-flash", "wrong-flash");
+          item.disabled = true;
+        });
+        const correct = button.dataset.correct === "true";
+        button.classList.add(correct ? "correct-flash" : "wrong-flash");
+        document.querySelector("#pickFeedback").textContent = correct
+          ? "对啦！霜是在说月光白白的。👏"
+          : "再想想：霜是在说月光亮得像白霜。";
+        if (!correct) {
+          pickChoices.find((item) => item.dataset.correct === "true").classList.add("correct-flash");
+        }
+      });
+    });
+
+    document.querySelector("#resetPick").addEventListener("click", () => {
+      pickChoices.forEach((button) => {
+        button.disabled = false;
+        button.classList.remove("correct-flash", "wrong-flash");
+      });
+      document.querySelector("#pickFeedback").textContent = "";
+    });
+
+    const orderedLines = ["举头望明月，", "低头思故乡。"];
+    let orderStep = 0;
+
+    function shuffled(items) {
+      const copy = [...items];
+      for (let index = copy.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+      }
+      return copy;
+    }
+
+    function renderOrderGame() {
+      const list = document.querySelector("#orderList");
+      list.replaceChildren();
+      orderStep = 0;
+      document.querySelector("#orderFeedback").textContent = "请点第一句。";
+      shuffled(orderedLines).forEach((line) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "order-choice";
+        button.textContent = line;
+        button.addEventListener("click", () => {
+          if (line === orderedLines[orderStep]) {
+            button.disabled = true;
+            button.textContent = `✓ ${line}`;
+            orderStep += 1;
+            document.querySelector("#orderFeedback").textContent =
+              orderStep === orderedLines.length ? "排对啦！这两句最有名。👏" : "很好，再点下一句。";
+          } else {
+            document.querySelector("#orderFeedback").textContent = "先找第一句哦。";
+          }
+        });
+        list.append(button);
+      });
+    }
+
+    document.querySelector("#resetOrder").addEventListener("click", renderOrderGame);
+    renderOrderGame();
+  </script>
+</body>
+</html>
